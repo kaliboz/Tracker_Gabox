@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Activity, PlusCircle, List, TrendingDown, Trash2, Download, Upload, CheckCircle, Pencil, AlertCircle } from 'lucide-react';
+import { Activity, PlusCircle, List, TrendingDown, Trash2, Download, Upload, CheckCircle, Pencil, AlertCircle, Sun } from 'lucide-react';
 
 type SwimStyle = 'Crol' | 'Espalda' | 'Pecho' | 'Mariposa';
 type PoolType = 'Corta' | 'Larga';
@@ -72,6 +72,7 @@ export default function App() {
   const [importMessage, setImportMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null);
+  const [sunMode, setSunMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const uniqueSwimmers = useMemo(() => {
@@ -254,7 +255,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20 md:pb-0">
+    <div className={`min-h-screen font-sans pb-20 md:pb-0 transition-colors ${sunMode ? 'bg-white text-black' : 'bg-gray-50 text-gray-900'}`}>
       
       {/* Global Error Message */}
       {errorMessage && (
@@ -289,12 +290,19 @@ export default function App() {
       )}
 
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-10">
+      <header className={`p-4 shadow-md sticky top-0 z-10 transition-colors ${sunMode ? 'bg-white text-black border-b-4 border-black' : 'bg-blue-600 text-white'}`}>
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Activity className="w-6 h-6" />
             <h1 className="text-xl font-bold">Swim Tracker</h1>
           </div>
+          <button
+            onClick={() => setSunMode(!sunMode)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-colors ${sunMode ? 'bg-black text-white hover:bg-gray-800' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+          >
+            <Sun className="w-4 h-4" />
+            {sunMode ? 'Modo Normal' : 'Modo Sol'}
+          </button>
         </div>
       </header>
 
@@ -323,7 +331,7 @@ export default function App() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className={`rounded-2xl overflow-hidden transition-all ${sunMode ? 'bg-white border-4 border-black shadow-none' : 'bg-white shadow-sm border border-gray-100'}`}>
           
           {/* ADD RECORD TAB */}
           {activeTab === 'add' && (
@@ -333,7 +341,7 @@ export default function App() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nadador</label>
+                    <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Nadador</label>
                     <input 
                       type="text" 
                       required
@@ -341,51 +349,51 @@ export default function App() {
                       value={swimmerName}
                       onChange={(e) => setSwimmerName(e.target.value)}
                       placeholder="Ej. Gabox"
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${sunMode ? 'border-black text-black font-bold bg-white' : 'border-gray-300'}`}
                     />
                     <datalist id="swimmers-list">
                       {uniqueSwimmers.map(s => <option key={s} value={s} />)}
                     </datalist>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                    <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Fecha</label>
                     <input 
                       type="date" 
                       required
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${sunMode ? 'border-black text-black font-bold bg-white' : 'border-gray-300'}`}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Estilo</label>
+                    <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Estilo</label>
                     <select 
                       value={style}
                       onChange={(e) => setStyle(e.target.value as SwimStyle)}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
+                      className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white ${sunMode ? 'border-black text-black font-bold' : 'border-gray-300'}`}
                     >
                       {STYLES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Distancia (m)</label>
+                    <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Distancia (m)</label>
                     <select 
                       value={distance}
                       onChange={(e) => setDistance(Number(e.target.value))}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
+                      className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white ${sunMode ? 'border-black text-black font-bold' : 'border-gray-300'}`}
                     >
                       {DISTANCES.map(d => <option key={d} value={d}>{d}m</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Piscina</label>
+                    <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Piscina</label>
                     <select 
                       value={poolType}
                       onChange={(e) => setPoolType(e.target.value as PoolType)}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
+                      className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white ${sunMode ? 'border-black text-black font-bold' : 'border-gray-300'}`}
                     >
                       <option value="Corta">Corta (25m)</option>
                       <option value="Larga">Larga (50m)</option>
@@ -394,7 +402,7 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tiempo (MM:SS.cc)</label>
+                  <label className={`block text-sm mb-1 ${sunMode ? 'text-black font-bold' : 'font-medium text-gray-700'}`}>Tiempo (MM:SS.cc)</label>
                   <div className="flex items-center gap-2">
                     <input 
                       type="number" 
@@ -402,25 +410,25 @@ export default function App() {
                       min="0" max="59"
                       value={timeMin}
                       onChange={(e) => setTimeMin(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className={`w-full p-3 border rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${sunMode ? 'border-black text-black text-3xl font-black py-4 bg-white' : 'border-gray-300 text-base'}`}
                     />
-                    <span className="font-bold text-gray-400">:</span>
+                    <span className={`font-bold ${sunMode ? 'text-black text-3xl' : 'text-gray-400'}`}>:</span>
                     <input 
                       type="number" 
                       placeholder="00"
                       min="0" max="59"
                       value={timeSec}
                       onChange={(e) => setTimeSec(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className={`w-full p-3 border rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${sunMode ? 'border-black text-black text-3xl font-black py-4 bg-white' : 'border-gray-300 text-base'}`}
                     />
-                    <span className="font-bold text-gray-400">.</span>
+                    <span className={`font-bold ${sunMode ? 'text-black text-3xl' : 'text-gray-400'}`}>.</span>
                     <input 
                       type="number" 
                       placeholder="00"
                       min="0" max="99"
                       value={timeCen}
                       onChange={(e) => setTimeCen(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className={`w-full p-3 border rounded-xl text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all ${sunMode ? 'border-black text-black text-3xl font-black py-4 bg-white' : 'border-gray-300 text-base'}`}
                     />
                   </div>
                 </div>
@@ -507,7 +515,7 @@ export default function App() {
               ) : (
                 <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
                   <table className="w-full min-w-[600px] text-sm text-left">
-                    <thead className="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+                    <thead className={`font-medium border-b ${sunMode ? 'bg-white text-black border-black border-b-2' : 'bg-gray-50 text-gray-600 border-gray-200'}`}>
                       <tr>
                         <th className="p-3">Fecha</th>
                         <th className="p-3">Nadador</th>
@@ -519,18 +527,18 @@ export default function App() {
                     <tbody className="divide-y divide-gray-100 bg-white">
                       {historyData.map((record) => (
                         <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="p-3 whitespace-nowrap text-gray-500">
+                          <td className={`p-3 whitespace-nowrap ${sunMode ? 'text-black font-bold' : 'text-gray-500'}`}>
                             {new Date(record.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </td>
-                          <td className="p-3 font-medium text-gray-900">{record.swimmerName || 'Desconocido'}</td>
+                          <td className={`p-3 font-medium ${sunMode ? 'text-black font-bold' : 'text-gray-900'}`}>{record.swimmerName || 'Desconocido'}</td>
                           <td className="p-3">
                             <div className="flex items-center gap-1 flex-wrap">
-                              <span className="text-[11px] font-medium px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">{record.style}</span>
-                              <span className="text-[11px] font-medium px-2 py-0.5 bg-gray-100 text-gray-800 rounded-full">{record.distance}m</span>
-                              <span className="text-[11px] font-medium px-2 py-0.5 bg-teal-100 text-teal-800 rounded-full">{record.poolType || 'Corta'}</span>
+                              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${sunMode ? 'bg-white border border-black text-black' : 'bg-blue-100 text-blue-800'}`}>{record.style}</span>
+                              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${sunMode ? 'bg-white border border-black text-black' : 'bg-gray-100 text-gray-800'}`}>{record.distance}m</span>
+                              <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${sunMode ? 'bg-white border border-black text-black' : 'bg-teal-100 text-teal-800'}`}>{record.poolType || 'Corta'}</span>
                             </div>
                           </td>
-                          <td className="p-3 font-bold text-gray-900 text-base">{record.time}</td>
+                          <td className={`p-3 font-bold text-base ${sunMode ? 'text-black text-xl' : 'text-gray-900'}`}>{record.time}</td>
                           <td className="p-3 text-right whitespace-nowrap">
                             <button 
                               onClick={() => handleEdit(record)}
