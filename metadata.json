@@ -1,0 +1,5 @@
+{
+  "name": "Tracker de Gabox",
+  "description": "A simple web app to track a child's swimming progress.",
+  "requestFramePermissions": []
+}
